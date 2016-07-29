@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Books | Reviews</title>
+		{% load staticfiles %}
+		<link rel="stylesheet" type="text/css" href="{% static 'books/css/style.css' %}">
+	</head>
+	<body>
+		<div div="wrapper">
+			<header>
+				<p>
+					<a href="/books">Home</a>
+					<form action="/logout" method="POST">
+						{% csrf_token %}
+						<button>Logout</button>
+					</form>
+				</p>
+			</header>
+			<h1>{{ book.title }}</h1>
+			<h2>Author: {{ book.author }}</h2>
+			<div class="reviews">
+				<h2>Reviews</h2>
+				{% for review in reviews %}
+				<section>
+					<h4>Rating: <span class="rating">
+						{% if review.rating == 1 %}
+							<img src="{% static 'books/image/1_star.png' %}" alt="1" style="width: 60px" />
+						{% elif review.rating == 2 %}
+							<img src="{% static 'books/image/2_star.png' %}" alt="2" style="width: 60px" />
+						{% elif review.rating == 3 %}
+							<img src="{% static 'books/image/3_star.png' %}" alt="3" style="width: 60px" />
+						{% elif review.rating == 4 %}
+							<img src="{% static 'books/image/4_star.png' %}" alt="4" style="width: 60px" />
+						{% elif review.rating == 5 %}
+							<img src="{% static 'books/image/5_star.png' %}" alt="5" style="width: 60px" />
+						{% endif %}
+					</span></h4>
+					<h4><a href="/users/{{ review.user_id }}">{{ review.alias }}</a> says <i>{{ review.description }}</i></h4>
+					<h4><i>Posted on {{ review.created_at}}</i></h4>
+					{% if review.user_id == request.session.user_id %}
+						<form class="delete_button" action="/delete/{{ book.id }}/{{ review.id }}" method="post">
+							{% csrf_token %}
+							<input type="submit" value="Delete this Review">
+						</form>
+					{% endif %}
+				</section>
+				{% endfor %}
+			</div>
+			<div class="add_review">
+				<form action="/add/review/{{ book.id }}" method="post">
+					{% csrf_token %}
+					<h3><label for="description">Add a Review:</label></h3>
+					<textarea name="description" id="description" rows="8" cols="60"></textarea>
+					<h3>
+						<label for="rating">Rating:</label>
+						<select name="rating" id="rating">
+							<option>1</option>
+							<option>2</option>
+							<option>3</option>
+							<option>4</option>
+							<option>5</option>
+						</select> stars.
+					</h3>
+					<input type="submit" value="Submit Review" id="button_review">
+				</form>
+			</div>
+			<footer>
+				{% if messages %}
+				<ul class="messages">
+					{% for message in messages %}
+					<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+					{% endfor %}
+				</ul>
+				{% endif %}
+			</footer>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Books | Home</title>
+		{% load staticfiles %}
+		<link rel="stylesheet" type="text/css" href="{% static 'books/css/style.css' %}">
+	</head>
+	<body>
+		<div div="wrapper">
+			<header>
+				<h1>Welcome, {{ user.alias }}!</h1>
+				<p>
+					<a href="/books/add">Add Book and Review</a>
+					<form action="/logout" method="POST">
+						{% csrf_token %}
+						<button>Logout</button>
+					</form>
+				</p>
+			</header>
+			<div class="recent">
+				<h2>Recent Book Reviews:</h2>
+				{% for review in reviews %}
+				<section>
+					<h3><a href="/books/{{ review.id }}">{{ review.title }}</a></h3>
+					<h4>Rating: <span class="rating">
+						{% if review.rating == 1 %}
+							<img src="{% static 'books/image/1_star.png' %}" alt="1" style="width: 60px" />
+						{% elif review.rating == 2 %}
+							<img src="{% static 'books/image/2_star.png' %}" alt="2" style="width: 60px" />
+						{% elif review.rating == 3 %}
+							<img src="{% static 'books/image/3_star.png' %}" alt="3" style="width: 60px" />
+						{% elif review.rating == 4 %}
+							<img src="{% static 'books/image/4_star.png' %}" alt="4" style="width: 60px" />
+						{% elif review.rating == 5 %}
+							<img src="{% static 'books/image/5_star.png' %}" alt="5" style="width: 60px" />
+						{% endif %}
+					</h4>
+					<h4><a href="/users/{{ review.user_id }}">{{ review.alias }}</a> says <i>{{ review.description }}</i></h4>
+					<h4><i>Posted on {{ review.created_at }}</i></h4>
+				</section>
+				{% endfor %}
+			</div>
+
+			<div class="other_books">
+				<h2>Other Books with Reviews:</h2>
+				<div class="list_of_books">
+				{% for book in books %}
+					<h5><a href="/books/{{ book.id }}">{{ book.title }}</a></h5>
+				{% endfor %}
+				</div>
+			</div>
+			<footer>
+				{% if messages %}
+				<ul class="messages">
+					{% for message in messages %}
+					<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+					{% endfor %}
+				</ul>
+				{% endif %}
+			</footer>
+		</div>
+	</body>
+</html>

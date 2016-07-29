@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Books | User Info</title>
+		{% load staticfiles %}
+		<link rel="stylesheet" type="text/css" href="{% static 'books/css/style.css' %}">
+	</head>
+	<body>
+		<div div="wrapper">
+			<header>
+				<p>
+					<a href="/books">Home</a>
+					<a href="/books/add">Add Book and Review</a>
+					<form action="/logout" method="POST">
+						{% csrf_token %}
+						<button>Logout</button>
+					</form>
+				</p>
+			</header>
+			<div class="user_info">
+				<h1>User Alias: {{ user.0.alias }}</h1>
+				<h3>Name: {{ user.0.name }}</h3>
+				<h3>Email: {{ user.0.email }}</h3>
+				<h3>Total Reviews: {{ user.0.total_reviews }}</h3>
+			</div>
+			<div class="user_reviews">
+				<h2>Posted Reviews on the following books:</h2>
+				{% for book in books %}
+				<h5><a href="/books/{{ book.book_id }}">{{ book.title }}</a></h5>
+				{% endfor %}
+			</div>
+		</div>
+	</body>
+</html>
